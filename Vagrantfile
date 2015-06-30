@@ -59,12 +59,12 @@ echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
 # get ds003 data
-#if [ ! -d $HOME/data ]
-#then
-#  mkdir $HOME/data
-#  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz
-#  tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
-#fi
+if [ ! -d $HOME/data ]
+then
+  mkdir $HOME/data
+  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz
+  tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
+fi
 
 sudo VBoxClient --display -d
 sudo VBoxClient --clipboard -d

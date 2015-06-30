@@ -8,7 +8,7 @@ $script = <<SCRIPT
 # # Install neurodebian repo
 bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
 
-wget -O- http://neuro.debian.net/lists/trusty.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+wget -O- http://neuro.debian.net/lists/precise.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
 sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 sudo apt-get update > /dev/null
 
@@ -22,6 +22,9 @@ then
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
 
+echo 'export FSLDIR=/usr/share/fsl/5.0' >> .bashrc
+echo ". /usr/share/fsl/5.0/etc/fslconf/fsl.sh"  >> .bashrc
+
 # install nipype dependencies
 $HOME/miniconda/bin/conda update --yes conda
 $HOME/miniconda/bin/pip install setuptools
@@ -32,7 +35,7 @@ $HOME/miniconda/bin/conda install --yes sypder-app
 $HOME/miniconda/bin/pip install nibabel
 $HOME/miniconda/bin/pip install nilearn
 
-easy_install nipype
+$HOME/miniconda/bin/easy_install nipype
 
 echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
 sudo cp /tmp/myppa.list /etc/apt/sources.list.d/
@@ -46,7 +49,7 @@ sudo apt-get install -y --force-yes git
 sudo apt-get install -y --force-yes fsl-complete
 sudo apt-get install -y --force-yes xserver-xorg-core
 sudo apt-get install -y --force-yes iceweasel
-
+sudo apt-get install -y --force-yes xfce4 virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
 
 if [ ! -d $HOME/R_libs ]
 then
@@ -56,12 +59,17 @@ echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
 # get ds003 data
-if [ ! -d $HOME/data ]
-then
-  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz
-  tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
-fi
+#if [ ! -d $HOME/data ]
+#then
+#  mkdir $HOME/data
+#  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz
+#  tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
+#fi
 
+sudo VBoxClient --display -d
+sudo VBoxClient --clipboard -d
+
+startxfce4&
 
 SCRIPT
 
@@ -69,9 +77,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_x11 = true
 
   config.vm.define :engine do |engine_config|
-    engine_config.vm.box = "jessie"
-    engine_config.vm.box_url = "https://github.com/holms/vagrant-jessie-box/releases/download/Jessie-v0.1/Debian-jessie-amd64-netboot.box"
-
+    engine_config.vm.box = "precise64"
+    engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
     engine_config.vm.network :private_network, ip: "192.128.0.20"
     engine_config.vm.hostname = 'fmri-analysis'
     #engine_config.vm.synced_folder "/tmp/myconnectome", "/home/vagrant/myconnectome", create: true
@@ -81,6 +88,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--ioapic", "on"]
       vb.customize ["modifyvm", :id, "--memory", "8192"]
       vb.customize ["modifyvm", :id, "--cpus", "2"]
+      vb.gui = true
     end
 
     engine_config.vm.provision "shell", :privileged => false, inline: $script

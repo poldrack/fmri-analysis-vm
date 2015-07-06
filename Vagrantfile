@@ -49,7 +49,9 @@ sudo apt-get install -y --force-yes git
 sudo apt-get install -y --force-yes fsl-complete
 sudo apt-get install -y --force-yes xserver-xorg-core
 sudo apt-get install -y --force-yes iceweasel
-sudo apt-get install -y --force-yes xfce4 virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+sudo apt-get install -y --force-yes xfce4 
+sudo apt-get install -y --force-yes virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+
 
 if [ ! -d $HOME/R_libs ]
 then
@@ -68,8 +70,7 @@ fi
 
 sudo VBoxClient --display -d
 sudo VBoxClient --clipboard -d
-
-startxfce4&
+sudo VBoxManage setextradata global GUI/MaxGuestResolution any
 
 SCRIPT
 

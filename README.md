@@ -10,14 +10,17 @@ A VM setup for use in fMRI analysis and education.
 3. If you don't already have it, install [git] (https://git-scm.com/downloads)
 
 4.  cd to the directory where you want to house the project, and then clone the myconnectome vagrant setup:
-`git clone https://github.com/poldrack/myconnectome-vm.git`
+`git clone https://github.com/poldrack/fmri-analysis-vm.git`
 
-5. cd into the vm directory: `cd myconnectome-vm`
+5. cd into the vm directory: `cd fmri-analysis-vm`
 
 6. set up the vagrant VM (which may take a little while):
 `vagrant up`
 
-7.  Step 6 will automatically start the analysis processes, which will take several hours to complete.  Using a web browser on your local machine, view the results at [http://192.128.0.20:5000](http://192.128.0.20:5000)
+7. Once the setup has completed, you can log into the machine from the same directory using:
+`vagrant ssh`
+Once you have done this, you can start the windowing system by typing:
+`startxfce4`
 
 ## Digging deeper
 
@@ -31,7 +34,7 @@ The code for the analyses along with all of the results are located in the mycon
 
 If you wish to copy the data and results from the virtual machine to your host machine, you can do so by logging into the VM (using "vagrant ssh") and executing the following command:
 
-`cp -r myconnectome /vagrant/`
+`cp -r <directory to copy> /vagrant/`
 
 This will place a copy of the results in the directory where the Vagrantfile is located on your host machine.
 

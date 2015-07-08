@@ -4,14 +4,6 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-
-# # Install neurodebian repo
-bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
-
-wget -O- http://neuro.debian.net/lists/precise.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
-sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
-sudo apt-get update > /dev/null
-
 if [ ! -d $HOME/miniconda ]
 then
  # install anaconda
@@ -22,36 +14,47 @@ then
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
 
-echo 'export FSLDIR=/usr/share/fsl/5.0' >> .bashrc
-echo ". /usr/share/fsl/5.0/etc/fslconf/fsl.sh"  >> .bashrc
-
 # install nipype dependencies
 $HOME/miniconda/bin/conda update --yes conda
-$HOME/miniconda/bin/pip install setuptools
-$HOME/miniconda/bin/conda install --yes pip numpy scipy nose traits networkx
-$HOME/miniconda/bin/conda install --yes dateutil ipython-notebook matplotlib
-$HOME/miniconda/bin/conda install --yes statsmodels boto  pandas scikit-learn
-$HOME/miniconda/bin/conda install --yes sypder-app
-$HOME/miniconda/bin/pip install nibabel
-$HOME/miniconda/bin/pip install nilearn
+$HOME/miniconda/bin/conda install --yes pip \
+numpy \
+scipy \
+nose \
+traits \
+networkx \
+dateutil \
+ipython-notebook \
+matplotlib \
+statsmodels \
+boto \
+pandas \
+scikit-learn \
+spyder
+$HOME/miniconda/bin/pip install nibabel nilearn nipype
 
-$HOME/miniconda/bin/easy_install nipype
+wget -O- http://neuro.debian.net/lists/trusty.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 
-echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
-sudo cp /tmp/myppa.list /etc/apt/sources.list.d/
-rm /tmp/myppa.list
+echo 'deb http://cran.cnr.Berkeley.edu/bin/linux/ubuntu trusty/' > /tmp/cran.sources.list
+sudo cp /tmp/cran.sources.list /etc/apt/sources.list.d/
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
 
-sudo apt-get update > /dev/null
-sudo apt-get install -y --force-yes libgd2-xpm
-sudo apt-get install -y --force-yes libicu48
-sudo apt-get install -y --force-yes r-base 
-sudo apt-get install -y --force-yes git 
-sudo apt-get install -y --force-yes fsl-complete
-sudo apt-get install -y --force-yes xserver-xorg-core
-sudo apt-get install -y --force-yes iceweasel
-sudo apt-get install -y --force-yes xfce4 
-sudo apt-get install -y --force-yes virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
 
+sudo apt-get update
+sudo apt-get install -y dictionaries-common
+sudo /usr/share/debconf/fix_db.pl
+sudo apt-get install -y dictionaries-common
+sudo apt-get install -y r-base \
+git \
+fsl-core \
+fsl-atlases \
+xserver-xorg-core \
+iceweasel \
+xfce4 \
+xubuntu-icon-theme
+
+echo 'export FSLDIR=/usr/share/fsl/5.0' >> .bashrc
+echo ". /usr/share/fsl/5.0/etc/fslconf/fsl.sh"  >> .bashrc
 
 if [ ! -d $HOME/R_libs ]
 then
@@ -64,34 +67,55 @@ fi
 if [ ! -d $HOME/data ]
 then
   mkdir $HOME/data
-  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz
+  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
 fi
 
 sudo VBoxClient --display -d
 sudo VBoxClient --clipboard -d
-sudo VBoxManage setextradata global GUI/MaxGuestResolution any
 
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    
   config.ssh.forward_x11 = true
 
-  config.vm.define :engine do |engine_config|
-    engine_config.vm.box = "precise64"
-    engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-    engine_config.vm.network :private_network, ip: "192.128.0.20"
-    engine_config.vm.hostname = 'fmri-analysis'
-    #engine_config.vm.synced_folder "/tmp/myconnectome", "/home/vagrant/myconnectome", create: true
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.network :private_network, ip: "192.128.0.20"
+  config.vm.hostname = 'fmri-analysis'
+    
+  if Vagrant.has_plugin?("vagrant-cachier")
+        # Configure cached packages to be shared between instances of the same base box.
+        # More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage
+        config.cache.scope = :box
 
-    engine_config.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+        # OPTIONAL: If you are using VirtualBox, you might want to use that to enable
+        # NFS for shared folders. This is also very useful for vagrant-libvirt if you
+        # want bi-directional sync
+        config.cache.synced_folder_opts = {
+          type: :nfs,
+          # The nolock option can be useful for an NFSv3 client that wants to avoid the
+          # NLM sideband protocol. Without this option, apt-get might hang if it tries
+          # to lock files needed for /var/cache/* operations. All of this can be avoided
+          # by using NFSv4 everywhere. Please note that the tcp option is not the default.
+          mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
+        }
+        # For more information please check http://docs.vagrantup.com/v2/synced-folders/basic_usage.html
+  end
+
+   config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--ioapic", "on"]
-      vb.customize ["modifyvm", :id, "--memory", "8192"]
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
       vb.customize ["modifyvm", :id, "--cpus", "2"]
+      vb.customize ["setextradata", :id, "GUI/MaxGuestResolution", "any"]
       vb.gui = true
+      vb.name = "fmri-analysis"
+  end
+
+    config.vm.provision "shell", :privileged => false, inline: $script
+    
+    config.push.define "atlas" do |push|
+      push.app = "poldracklab/fmri-analysis"
     end
 
-    engine_config.vm.provision "shell", :privileged => false, inline: $script
-  end
 end

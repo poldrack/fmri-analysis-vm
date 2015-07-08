@@ -7,17 +7,12 @@ A VM setup for use in fMRI analysis and education.
 
 2. Install [Vagrant] (http://www.vagrantup.com/downloads) - Vagrant is a provisioning system that sets up the virtual machine.
 
-3. If you don't already have it, install [git] (https://git-scm.com/downloads)
+3. Make sure your machine has at least 8Gb of RAM and 10Gb or free space.
 
-4.  cd to the directory where you want to house the project, and then clone the myconnectome vagrant setup:
-`git clone https://github.com/poldrack/fmri-analysis-vm.git`
+4. Open a terminal, cd to the directory where you want to house the project, and then run the VM:
+`vagrant init poldracklab/fmri-analysis; vagrant up --provider virtualbox`
 
-5. cd into the vm directory: `cd fmri-analysis-vm`
-
-6. set up the vagrant VM (which may take a little while):
-`vagrant up`
-
-7. Once the setup has completed, you can log into the machine from the same directory using:
+5. Once the VM is downloaded (total of 2.1 Gb), you can log into the machine from the same directory using:
 `vagrant ssh`
 Once you have done this, you can start the windowing system by typing:
 `startxfce4`
@@ -46,3 +41,12 @@ If the VM crashes for some reason (which can occur if there is a network hiccup 
 
 And then restart it as outlined above.  
 
+## Building the Vagrant box
+
+1. `git clone https://github.com/poldrack/fmri-analysis-vm.git`
+
+2. `cd fmri-analysis-vm`
+
+3. `vagrant up`
+
+4. To push the image to Atlas see https://atlas.hashicorp.com/help/vagrant/boxes/create 

@@ -10,6 +10,7 @@ then
  wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
  chmod +x miniconda.sh
  ./miniconda.sh -b
+ rm -rf miniconda.sh
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
@@ -41,11 +42,25 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
 
 sudo rm -rf /var/lib/apt/lists /var/cache/apt/archives
 sudo apt-get update -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
+#sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
+
+# workaround http://forums.debian.net/viewtopic.php?f=10&t=101659
+sudo /usr/share/debconf/fix_db.pl
+sudo apt-get install -y dictionaries-common
+sudo /usr/share/debconf/fix_db.pl
+
 sudo apt-get install -y r-base \
 git \
 fsl-core \
-fsl-atlases
+fsl-atlases \
+lxde \
+lightdm \
+chromium-browser
+
+sudo sh -c 'echo "[SeatDefaults]
+user-session=LXDE
+autologin-user=vagrant
+autologin-user-timeout=0" >> /etc/lightdm/lightdm.conf'
 
 echo 'export FSLDIR=/usr/share/fsl/5.0' >> .bashrc
 echo ". /usr/share/fsl/5.0/etc/fslconf/fsl.sh"  >> .bashrc
@@ -66,6 +81,10 @@ then
   rm -rf $HOME/data/ds003_raw.tgz
 fi
 
+sudo apt-get clean -y
+sudo apt-get autoclean -y
+sudo apt-get autoremove -y
+
 sudo VBoxClient --display -d
 sudo VBoxClient --clipboard -d
 
@@ -75,28 +94,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     
   config.ssh.forward_x11 = true
 
-  config.vm.box = "boxcutter/ubuntu1404-desktop"
+  config.vm.box = "ubuntu/trusty64"
   config.vm.network :private_network, ip: "192.128.0.20"
   config.vm.hostname = 'fmri-analysis'
-    
-  if Vagrant.has_plugin?("vagrant-cachier")
-        # Configure cached packages to be shared between instances of the same base box.
-        # More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage
-        config.cache.scope = :box
-
-        # OPTIONAL: If you are using VirtualBox, you might want to use that to enable
-        # NFS for shared folders. This is also very useful for vagrant-libvirt if you
-        # want bi-directional sync
-        config.cache.synced_folder_opts = {
-          type: :nfs,
-          # The nolock option can be useful for an NFSv3 client that wants to avoid the
-          # NLM sideband protocol. Without this option, apt-get might hang if it tries
-          # to lock files needed for /var/cache/* operations. All of this can be avoided
-          # by using NFSv4 everywhere. Please note that the tcp option is not the default.
-          mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
-        }
-        # For more information please check http://docs.vagrantup.com/v2/synced-folders/basic_usage.html
-  end
 
    config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--ioapic", "on"]

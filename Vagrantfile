@@ -39,19 +39,13 @@ echo 'deb http://cran.cnr.Berkeley.edu/bin/linux/ubuntu trusty/' > /tmp/cran.sou
 sudo cp /tmp/cran.sources.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
 
-
-sudo apt-get update
-sudo apt-get install -y dictionaries-common
-sudo /usr/share/debconf/fix_db.pl
-sudo apt-get install -y dictionaries-common
+sudo rm -rf /var/lib/apt/lists /var/cache/apt/archives
+sudo apt-get update -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
 sudo apt-get install -y r-base \
 git \
 fsl-core \
-fsl-atlases \
-xserver-xorg-core \
-iceweasel \
-xfce4 \
-xubuntu-icon-theme
+fsl-atlases
 
 echo 'export FSLDIR=/usr/share/fsl/5.0' >> .bashrc
 echo ". /usr/share/fsl/5.0/etc/fslconf/fsl.sh"  >> .bashrc
@@ -69,6 +63,7 @@ then
   mkdir $HOME/data
   wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
+  rm -rf $HOME/data/ds003_raw.tgz
 fi
 
 sudo VBoxClient --display -d
@@ -80,7 +75,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     
   config.ssh.forward_x11 = true
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "boxcutter/ubuntu1404-desktop"
   config.vm.network :private_network, ip: "192.128.0.20"
   config.vm.hostname = 'fmri-analysis'
     

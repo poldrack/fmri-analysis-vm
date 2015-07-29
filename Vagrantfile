@@ -80,6 +80,9 @@ then
   wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
   rm -rf $HOME/data/ds003_raw.tgz
+  wget http://openfmri.s3.amazonaws.com/ds031/ds031_example.tgz -O $HOME/data/ds031_example.tgz -nv
+  tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
+  rm -rf $HOME/data/ds031_example.tgz
 fi
 
 sudo apt-get clean -y

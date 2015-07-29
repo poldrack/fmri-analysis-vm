@@ -55,7 +55,8 @@ fsl-core \
 fsl-atlases \
 lxde \
 lightdm \
-chromium-browser
+chromium-browser \
+ants
 
 sudo sh -c 'echo "[SeatDefaults]
 user-session=LXDE
@@ -91,7 +92,7 @@ sudo VBoxClient --clipboard -d
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    
+
   config.ssh.forward_x11 = true
 
   config.vm.box = "ubuntu/trusty64"
@@ -108,7 +109,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
     config.vm.provision "shell", :privileged => false, inline: $script
-    
+
     config.push.define "atlas" do |push|
       push.app = "poldracklab/fmri-analysis"
     end

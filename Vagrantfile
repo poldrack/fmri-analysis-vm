@@ -65,6 +65,7 @@ autologin-user-timeout=0" >> /etc/lightdm/lightdm.conf'
 
 echo 'export FSLDIR=/usr/share/fsl/5.0' >> .bashrc
 echo ". /usr/share/fsl/5.0/etc/fslconf/fsl.sh"  >> .bashrc
+echo "export FMRIDATADIR=$HOME/data" >> .bashrc
 
 if [ ! -d $HOME/R_libs ]
 then
@@ -80,9 +81,15 @@ then
   wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
   rm -rf $HOME/data/ds003_raw.tgz
-  wget https://s3.amazonaws.com/openfmri/ds031/ds031_example.tgz -O $HOME/data/ds031_example.tgz -nv
-  tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
-  rm -rf $HOME/data/ds031_example.tgz
+  wget https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
+  tar zxvf $HOME/data/ds031_example_data.tgz -C $HOME/data/
+  rm -rf $HOME/data/ds031_example_data.tgz
+fi
+
+# get this repo
+if [ ! -d $HOME/fmri-analysis-vm ]
+then
+	git clone https://github.com/poldrack/fmri-analysis-vm
 fi
 
 sudo apt-get clean -y
@@ -104,7 +111,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
    config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--ioapic", "on"]
-      vb.customize ["modifyvm", :id, "--memory", "4096"]
+      vb.customize ["modifyvm", :id, "--memory", "5120"]
       vb.customize ["modifyvm", :id, "--cpus", "2"]
       vb.customize ["setextradata", :id, "GUI/MaxGuestResolution", "any"]
       vb.gui = true

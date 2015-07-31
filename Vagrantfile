@@ -55,8 +55,13 @@ fsl-core \
 fsl-atlases \
 lxde \
 lightdm \
-chromium-browser \
-ants
+chromium-browser
+
+wget --quiet https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14.04.tar.bz2
+tar jxvf Linux_Ubuntu14.04.tar.bz2
+echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .bashrc
+echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .env
+rm -rf Linux_Ubuntu14.04.tar.bz2
 
 sudo sh -c 'echo "[SeatDefaults]
 user-session=LXDE

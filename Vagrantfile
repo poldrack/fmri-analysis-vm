@@ -33,7 +33,7 @@ scikit-learn \
 spyder
 $HOME/miniconda/bin/pip install nibabel nilearn nipype
 
-wget -O- http://neuro.debian.net/lists/trusty.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+wget -O- http://neuro.debian.net/lists/trusty.us-nh.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
 sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 
 echo 'deb http://cran.cnr.Berkeley.edu/bin/linux/ubuntu trusty/' > /tmp/cran.sources.list
@@ -55,8 +55,13 @@ fsl-core \
 fsl-atlases \
 lxde \
 lightdm \
-chromium-browser \
-ants
+chromium-browser
+
+wget --quiet https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14.04.tar.bz2
+tar jxvf Linux_Ubuntu14.04.tar.bz2
+echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .bashrc
+echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .env
+rm -rf Linux_Ubuntu14.04.tar.bz2
 
 sudo sh -c 'echo "[SeatDefaults]
 user-session=LXDE

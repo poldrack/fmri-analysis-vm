@@ -82,8 +82,8 @@ then
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
   rm -rf $HOME/data/ds003_raw.tgz
   wget https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
-  tar zxvf $HOME/data/ds031_example_data.tgz -C $HOME/data/
-  rm -rf $HOME/data/ds031_example_data.tgz
+  tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
+  rm -rf $HOME/data/ds031_example.tgz
 fi
 
 # get this repo

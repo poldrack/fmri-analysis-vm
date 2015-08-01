@@ -33,7 +33,7 @@ scikit-learn \
 spyder
 $HOME/miniconda/bin/pip install nibabel nilearn nipype
 
-wget -O- http://neuro.debian.net/lists/trusty.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+wget -O- http://neuro.debian.net/lists/trusty.us-nh.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
 sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 
 echo 'deb http://cran.cnr.Berkeley.edu/bin/linux/ubuntu trusty/' > /tmp/cran.sources.list
@@ -87,8 +87,8 @@ then
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
   rm -rf $HOME/data/ds003_raw.tgz
   wget https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
-  tar zxvf $HOME/data/ds031_example_data.tgz -C $HOME/data/
-  rm -rf $HOME/data/ds031_example_data.tgz
+  tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
+  rm -rf $HOME/data/ds031_example.tgz
 fi
 
 # get this repo

@@ -13,7 +13,7 @@ class HaxbyData:
 
     def __init__(self,datadir):
         self.tr=2.5
-
+        
         self.boldfile=os.path.join(datadir,'bold.nii.gz')
         self.boldbrainfile=os.path.join(datadir,'bold_brain.nii.gz')
         self.vtmaskfile=os.path.join(datadir,'mask4_vt.nii.gz')

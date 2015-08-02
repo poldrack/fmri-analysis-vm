@@ -57,11 +57,15 @@ lxde \
 lightdm \
 chromium-browser
 
-wget --quiet https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14.04.tar.bz2
-tar jxvf Linux_Ubuntu14.04.tar.bz2
-echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .bashrc
-echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .env
-rm -rf Linux_Ubuntu14.04.tar.bz2
+if [ ! -d $HOME/ANTs.2.1.0.Debian-Ubuntu_X64 ]
+then
+  echo "downloading ANTs"
+  wget --quiet https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14.04.tar.bz2
+  tar jxvf Linux_Ubuntu14.04.tar.bz2
+  echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .bashrc
+  echo "export PATH=$HOME/ANTs.2.1.0.Debian-Ubuntu_X64:\\$PATH" >> .env
+  rm -rf Linux_Ubuntu14.04.tar.bz2
+fi
 
 sudo sh -c 'echo "[SeatDefaults]
 user-session=LXDE
@@ -96,6 +100,7 @@ if [ ! -d $HOME/fmri-analysis-vm ]
 then
 	git clone https://github.com/poldrack/fmri-analysis-vm
 fi
+
 
 sudo apt-get clean -y
 sudo apt-get autoclean -y

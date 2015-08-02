@@ -83,13 +83,23 @@ echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
 echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
-# get ds003 data
+# get example data
 if [ ! -d $HOME/data ]
 then
   mkdir $HOME/data
+fi
+
+if [ ! -d $HOME/data/ds003 ]
+then
+  echo "getting ds003 data"
   wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
   rm -rf $HOME/data/ds003_raw.tgz
+fi
+
+if [ ! -d $HOME/data/ds031 ]
+then
+  echo "getting ds031 data"
   wget https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
   tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
   rm -rf $HOME/data/ds031_example.tgz

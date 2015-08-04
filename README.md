@@ -49,4 +49,10 @@ And then restart it as outlined above.
 
 3. `vagrant up`
 
-4. To push the image to Atlas see https://atlas.hashicorp.com/help/vagrant/boxes/create 
+4. To push the image to Atlas see https://atlas.hashicorp.com/help/vagrant/boxes/create
+
+## Contributing to the IPython Notebooks
+
+`$ chmod +x scripts/ipynb_drop_output`
+`$ export PATH=$PWD/scripts/ipynb_drop_output:$PATH`
+`$ git config --add include.path $PWD/.gitconfig`

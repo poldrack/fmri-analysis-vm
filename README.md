@@ -54,5 +54,5 @@ And then restart it as outlined above.
 ## Contributing to the IPython Notebooks
 
 `$ chmod +x scripts/ipynb_drop_output`
-`$ export PATH=$PWD/scripts/ipynb_drop_output:$PATH`
+`$ export PATH=$PWD/scripts/:$PATH`
 `$ git config --add include.path $PWD/.gitconfig`

@@ -52,7 +52,8 @@ And then restart it as outlined above.
 4. To push the image to Atlas see https://atlas.hashicorp.com/help/vagrant/boxes/create
 
 ## Contributing to the IPython Notebooks
+To avoid conflicts when commiting IPython Notebook changes you need to run the following commands (from the roon the the repo):
 
-`$ chmod +x scripts/ipynb_drop_output`
-`$ export PATH=$PWD/scripts/:$PATH`
-`$ git config --add include.path $PWD/.gitconfig`
+1. `chmod +x scripts/ipynb_drop_output`
+2. `export PATH=$PWD/scripts/:$PATH`
+3. `git config --add include.path $PWD/.gitconfig`

@@ -15,24 +15,6 @@ then
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
 
-# install nipype dependencies
-$HOME/miniconda/bin/conda update --yes conda
-$HOME/miniconda/bin/conda install --yes pip \
-numpy \
-scipy \
-nose \
-traits \
-networkx \
-dateutil \
-ipython-notebook \
-matplotlib \
-statsmodels \
-boto \
-pandas \
-scikit-learn \
-spyder
-$HOME/miniconda/bin/pip install nibabel nilearn nipype
-
 wget -O- http://neuro.debian.net/lists/trusty.us-nh.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
 sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 
@@ -55,7 +37,56 @@ fsl-core \
 fsl-atlases \
 lxde \
 lightdm \
-chromium-browser
+chromium-browser \
+wget \
+tar \
+unzip
+
+# install nipype dependencies
+$HOME/miniconda/bin/conda update --yes conda
+$HOME/miniconda/bin/conda install --yes pip \
+numpy \
+scipy \
+nose \
+traits \
+networkx \
+dateutil \
+ipython-notebook \
+matplotlib \
+statsmodels \
+boto \
+pandas \
+scikit-learn \
+spyder
+$HOME/miniconda/bin/pip install nibabel nilearn
+$HOME/miniconda/bin/pip install --upgrade https://github.com/nipy/nipype/archive/master.zip
+$HOME/miniconda/bin/pip install --process-dependency-links git+https://github.com/pymc-devs/pymc3
+
+if [ ! -d $HOME/mcr ]
+then
+  echo "destinationFolder=/home/vagrant/mcr" > mcr_options.txt
+  echo "agreeToLicense=yes" >> mcr_options.txt
+  echo "outputFile=/tmp/matlabinstall_log" >> mcr_options.txt
+  echo "mode=silent" >> mcr_options.txt
+  mkdir -p matlab_installer
+  wget -nc --quiet http://www.mathworks.com/supportfiles/downloads/R2015a/deployment_files/R2015a/installers/glnxa64/MCR_R2015a_glnxa64_installer.zip -O $HOME/matlab_installer/installer.zip
+  unzip $HOME/matlab_installer/installer.zip -d $HOME/matlab_installer/
+  ./matlab_installer/install -inputFile mcr_options.txt
+  echo "export LD_LIBRARY_PATH=/home/vagrant/mcr/v85/runtime/glnxa64:/home/vagrant/mcr/v85/bin/glnxa64:/home/vagrant/mcr/v85/sys/os/glnxa64:$LD_LIBRARY_PATH" >> .bashrc
+  echo "export LD_LIBRARY_PATH=/home/vagrant/mcr/v85/runtime/glnxa64:/home/vagrant/mcr/v85/bin/glnxa64:/home/vagrant/mcr/v85/sys/os/glnxa64:$LD_LIBRARY_PATH" >> .env
+  echo "export PATH=/home/vagrant/mcr/v85/bin/:$PATH" >> .bashrc
+  echo "export PATH=/home/vagrant/mcr/v85/bin/:$PATH" >> .env
+  rm -rf matlab_installer mcr_options.txt
+fi
+
+if [ ! -d $HOME/spm12 ]
+then
+  wget --quiet http://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/dev/spm12_r6472_Linux_R2015a.zip -O spm12.zip
+  unzip spm12.zip
+  echo 'alias spm="/home/vagrant/spm12/run_spm12.sh /home/vagrant/mcr/v85/"' >> .bashrc
+  echo 'alias spm="/home/vagrant/spm12/run_spm12.sh /home/vagrant/mcr/v85/"' >> .env
+  rm -rf spm12.zip
+fi
 
 if [ ! -d $HOME/ANTs.2.1.0.Debian-Ubuntu_X64 ]
 then
@@ -78,9 +109,9 @@ echo "export FMRIDATADIR=$HOME/data" >> .bashrc
 
 if [ ! -d $HOME/R_libs ]
 then
-mkdir $HOME/R_libs
-echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
-echo "export R_LIBS_USER=$HOME/R_libs" >> .env
+  mkdir $HOME/R_libs
+  echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
+  echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
 # get example data
@@ -92,7 +123,7 @@ fi
 if [ ! -d $HOME/data/ds003 ]
 then
   echo "getting ds003 data"
-  wget http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
+  wget --quiet http://openfmri.s3.amazonaws.com/tarballs/ds003_raw.tgz -O $HOME/data/ds003_raw.tgz -nv
   tar zxvf $HOME/data/ds003_raw.tgz -C $HOME/data/
   rm -rf $HOME/data/ds003_raw.tgz
 fi
@@ -100,7 +131,7 @@ fi
 if [ ! -d $HOME/data/ds031 ]
 then
   echo "getting ds031 data"
-  wget https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
+  wget --quiet https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
   tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
   rm -rf $HOME/data/ds031_example.tgz
 fi
@@ -126,14 +157,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_x11 = true
 
   config.vm.box = "ubuntu/trusty64"
-  config.vm.network :private_network, ip: "192.128.0.20"
-  config.vm.hostname = 'fmri-analysis'
 
    config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--ioapic", "on"]
       vb.customize ["modifyvm", :id, "--memory", "5120"]
       vb.customize ["modifyvm", :id, "--cpus", "2"]
       vb.customize ["setextradata", :id, "GUI/MaxGuestResolution", "any"]
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+      vb.customize ["modifyvm", :id, "--vram", "64"]
       vb.gui = true
       vb.name = "fmri-analysis"
   end

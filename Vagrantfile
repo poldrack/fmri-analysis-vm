@@ -58,7 +58,7 @@ boto \
 pandas \
 scikit-learn \
 spyder
-$HOME/miniconda/bin/pip install nibabel nilearn
+$HOME/miniconda/bin/pip install nibabel nilearn nipy
 $HOME/miniconda/bin/pip install --upgrade https://github.com/nipy/nipype/archive/master.zip
 $HOME/miniconda/bin/pip install --process-dependency-links git+https://github.com/pymc-devs/pymc3
 

@@ -131,6 +131,16 @@ then
   rm -rf $HOME/data/ds003_raw.tgz
 fi
 
+if [ ! -d $HOME/data/ds009 ]
+then
+  echo "getting ds009 data"
+  mkdir $HOME/data/ds009
+  wget --quiet https://s3.amazonaws.com/openfmri/ds009/ds009_task002_copes.tgz -O $HOME/data/ds009_raw.tgz -nv
+  tar zxvf $HOME/data/ds009_raw.tgz -C $HOME/data/ds009/
+  rm -rf $HOME/data/ds009_raw.tgz
+fi
+
+
 if [ ! -d $HOME/data/ds031 ]
 then
   echo "getting ds031 data"
@@ -182,7 +192,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.gui = true
       vb.name = "fmri-analysis"
   end
-
+    # uncomment following line to allow syncing to local machine
+    #config.vm.synced_folder ".", "/vagrant"
     config.vm.provision "shell", :privileged => false, inline: $script
 
     config.push.define "atlas" do |push|

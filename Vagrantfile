@@ -149,6 +149,15 @@ then
   rm -rf $HOME/data/ds031_example.tgz
 fi
 
+if [ ! -d $HOME/data/ds009 ]
+then
+  echo "getting ds009 copes"
+  mkdir $HOME/data/ds009
+  wget --quiet https://s3.amazonaws.com/openfmri/ds009/ds009_task002_copes.tgz -O $HOME/data/ds009_copes.tgz -nv
+  tar zxvf $HOME/data/ds009_copes.tgz -C $HOME/data/ds009
+  rm -rf $HOME/data/ds009_copes.tgz
+fi
+
 # get this repo
 if [ ! -d $HOME/fmri-analysis-vm ]
 then

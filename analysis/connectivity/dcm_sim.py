@@ -54,8 +54,11 @@ def sim_dcm_dataset():
     C[0]=1
     u=0
 
+    print 'A'
     print A
+    print 'B'
     print B
+    print 'C'
     print C
 
     # we are assuming a 1 second TR for the resulting data

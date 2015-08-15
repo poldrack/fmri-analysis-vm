@@ -158,6 +158,13 @@ then
   rm -rf $HOME/data/ds009_copes.tgz
 fi
 
+if [ ! -d $HOME/tetrad ]
+then
+ echo "setting up tetrad"
+ mkdir $HOME/tetrad
+ wget --quiet  http://www.phil.cmu.edu/projects/tetrad_download/download/tetrad-4.3.10-7.jar -O $HOME/tetrad/tetrad-4.3.10-7.jar
+fi
+
 # get this repo
 if [ ! -d $HOME/fmri-analysis-vm ]
 then

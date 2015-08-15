@@ -42,7 +42,8 @@ wget \
 tar \
 unzip \
 default-jre \
-eog
+eog \
+geany
 
 # install nipype dependencies
 $HOME/miniconda/bin/conda update --yes conda

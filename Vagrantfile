@@ -41,7 +41,8 @@ chromium-browser \
 wget \
 tar \
 unzip \
-default-jre
+default-jre \
+eog
 
 # install nipype dependencies
 $HOME/miniconda/bin/conda update --yes conda

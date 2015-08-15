@@ -71,7 +71,8 @@ def sim_dcm_dataset():
 
     u=scipy.interpolate.griddata(numpy.arange(1,d.shape[0]),d,timepoints,fill_value=0)
     data,data_conv=mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=stepsize)
-    return data,data_conv
+    params={'A':A,'B':B','C':C,'u':u,'noise_sd':noise_sd}
+    return data,data_conv,params
 
 if __name__ == "main":
     d=sim_dcm_dataset()

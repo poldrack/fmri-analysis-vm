@@ -28,7 +28,7 @@ def mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=.01):
         data_conv[:,i]=numpy.convolve(data[:,i],hrf)[:data.shape[0]]
     return data,data_conv
 
-def sim_dcm_dataset():
+def sim_dcm_dataset(noise_sd=5,verbose=False):
 
     sys.path.insert(0,'../utils')
     from mkdesign import create_design_singlecondition
@@ -54,12 +54,13 @@ def sim_dcm_dataset():
     C[0]=1
     u=0
 
-    print 'A'
-    print A
-    print 'B'
-    print B
-    print 'C'
-    print C
+    if verbose:
+    	print 'A'
+    	print A
+    	print 'B'
+    	print B
+    	print 'C'
+    	print C
 
     # we are assuming a 1 second TR for the resulting data
     # but the neural data are at a 1/16 millisecond time resolution
@@ -67,7 +68,7 @@ def sim_dcm_dataset():
     tslength=300
     stepsize=.01
     timepoints=numpy.arange(0,tslength,stepsize)
-    noise_sd=10
+
 
     # create a blocked design
     d,design=create_design_singlecondition(blockiness=1.0,deslength=tslength,blocklength=20,offset=20)

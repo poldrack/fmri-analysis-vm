@@ -40,7 +40,8 @@ lightdm \
 chromium-browser \
 wget \
 tar \
-unzip
+unzip \
+default-jre
 
 # install nipype dependencies
 $HOME/miniconda/bin/conda update --yes conda

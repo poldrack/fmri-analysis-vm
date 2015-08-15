@@ -54,8 +54,11 @@ def sim_dcm_dataset():
     C[0]=1
     u=0
 
+    print 'A'
     print A
+    print 'B'
     print B
+    print 'C'
     print C
 
     # we are assuming a 1 second TR for the resulting data
@@ -71,7 +74,7 @@ def sim_dcm_dataset():
 
     u=scipy.interpolate.griddata(numpy.arange(1,d.shape[0]),d,timepoints,fill_value=0)
     data,data_conv=mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=stepsize)
-    params={'A':A,'B':B','C':C,'u':u,'noise_sd':noise_sd,'stepsize':stepsize}
+    params={'A':A,'B':B,'C':C,'u':u,'noise_sd':noise_sd,'stepsize':stepsize}
     return data,data_conv,params
 
 if __name__ == "main":

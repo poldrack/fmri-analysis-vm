@@ -174,6 +174,8 @@ then
 	git clone https://github.com/poldrack/fmri-analysis-vm
 fi
 
+$HOME/miniconda/bin/python -c "from nilearn import datasets; datasets.fetch_haxby()"
+
 
 sudo apt-get clean -y
 sudo apt-get autoclean -y

@@ -10,26 +10,31 @@ A VM setup for use in fMRI analysis and education.
 3. Make sure your machine has at least 8Gb of RAM and 10Gb or free space.
 
 4. Open a terminal, cd to the directory where you want to house the project:
-`git pull https://github.com/poldrack/fmri-analysis-vm.git`
+
+  `git clone https://github.com/poldrack/fmri-analysis-vm.git`
 
 5. `cd fmri-analysis-vm`
 
-6. Install guest vagrant plugins for guest additions and caching:
-`vagrant plugin install vagrant-vbguest`
-`vagrant plugin install vagrant-cachier`
+6. Install guest vagrant plugins for guest additions and caching (those can fail on the first try - try again in such case):
+
+  `vagrant plugin install vagrant-vbguest`
+  `vagrant plugin install vagrant-cachier`
 
 7. Build the VM (this may take some time depending on your Internet connection):
-`vagrant up 2>&1 | tee -a provision.log`
+
+  `vagrant up 2>&1 | tee -a provision.log`
 
 8. Reinstall virtual box guest additions:
-`vagrant vbguest --do install`
+
+  `vagrant vbguest --do install`
 
 9. Inspect `provision.log` looking for errors. Some download locations periodically go down.
 
 10. If everything is ok reboot the machine and see if you can use it.
 
 11. If you can use it shut it down and export it
-`VBoxManage export fmri-analysis --ovf20 --output /path/to/fmri_training_vm.ova`
+
+  `VBoxManage export fmri-analysis --ovf20 --output /path/to/fmri_training_vm.ova`
 
 12. Redistribute the .ova file via Dropbox or Google Drive.
 

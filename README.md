@@ -15,8 +15,7 @@ A VM setup for use in fMRI analysis and education.
 5. `cd fmri-analysis-vm`
 
 6. Install guest vagrant plugins for guest additions and caching:
-`vagrant plugin install vagrant-vbguest`
-`vagrant plugin install vagrant-cachier`
+`vagrant plugin install vagrant-vbguest; vagrant plugin install vagrant-cachier`
 
 7. Build the VM (this may take some time depending on your Internet connection):
 `vagrant up 2>&1 | tee -a provision.log`

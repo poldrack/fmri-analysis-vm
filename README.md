@@ -17,8 +17,7 @@ A VM setup for use in fMRI analysis and education.
 
 6. Install guest vagrant plugins for guest additions and caching (those can fail on the first try - try again in such case):
 
-  `vagrant plugin install vagrant-vbguest`
-  `vagrant plugin install vagrant-cachier`
+  `vagrant plugin install vagrant-vbguest; vagrant plugin install vagrant-cachier`
 
 7. Build the VM (this may take some time depending on your Internet connection):
 

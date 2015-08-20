@@ -31,7 +31,7 @@ sudo /usr/share/debconf/fix_db.pl
 sudo apt-get install -y dictionaries-common
 sudo /usr/share/debconf/fix_db.pl
 
-sudo apt-get install -y r-base \
+sudo apt-get install -y --force-yes r-base \
 git \
 fsl-core \
 fsl-atlases \
@@ -62,7 +62,8 @@ pandas \
 scikit-learn \
 spyder \
 sympy
-$HOME/miniconda/bin/pip install nibabel nilearn nipy
+$HOME/miniconda/bin/pip install nibabel nilearn
+$HOME/miniconda/bin/pip install nipy
 $HOME/miniconda/bin/pip install --upgrade https://github.com/nipy/nipype/archive/master.zip
 $HOME/miniconda/bin/pip install --process-dependency-links git+https://github.com/pymc-devs/pymc3
 
@@ -211,6 +212,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--vram", "64"]
       vb.gui = true
       vb.name = "fmri-analysis"
+
+      if Vagrant.has_plugin?("vagrant-cachier")
+        # Configure cached packages to be shared between instances of the same base box.
+        # More info on the "Usage" link above
+        config.cache.scope = :box
+
+      end
   end
     # uncomment following line to allow syncing to local machine
     #config.vm.synced_folder ".", "/vagrant"

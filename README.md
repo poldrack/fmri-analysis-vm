@@ -14,19 +14,24 @@ A VM setup for use in fMRI analysis and education.
 
 5. `cd fmri-analysis-vm`
 
-6. Install guest additions updater:
+6. Install guest vagrant plugins for guest additions and caching:
 `vagrant plugin install vagrant-vbguest`
+`vagrant plugin install vagrant-cachier`
 
 7. Build the VM (this may take some time depending on your Internet connection):
 `vagrant up 2>&1 | tee -a provision.log`
 
-5. Inspect `provision.log` looking for errors. Some download locations periodically go down.
+8. Reinstall virtual box guest additions:
+`vagrant vbguest --do install`
 
-6. If everything is ok reboot the machine and see if you can use it.
+9. Inspect `provision.log` looking for errors. Some download locations periodically go down.
 
-7. If you can use it shut it down and export it to a OVF 2.0 format ("File->Export Appliance" from the VirtualBox app menu.)
+10. If everything is ok reboot the machine and see if you can use it.
 
-8. Redistribute the .ova file via Dropbox or Google Drive.
+11. If you can use it shut it down and export it
+`VBoxManage export fmri-analysis --ovf20 --output /path/to/fmri_training_vm.ova`
+
+12. Redistribute the .ova file via Dropbox or Google Drive.
 
 ## Digging deeper
 

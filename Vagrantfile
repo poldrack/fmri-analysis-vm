@@ -78,8 +78,6 @@ then
   wget -nc --quiet http://www.mathworks.com/supportfiles/downloads/R2015a/deployment_files/R2015a/installers/glnxa64/MCR_R2015a_glnxa64_installer.zip -O $HOME/matlab_installer/installer.zip
   unzip $HOME/matlab_installer/installer.zip -d $HOME/matlab_installer/
   ./matlab_installer/install -inputFile mcr_options.txt
-  echo "export LD_LIBRARY_PATH=$HOME/mcr/v85/runtime/glnxa64:$HOME/mcr/v85/bin/glnxa64:$HOME/mcr/v85/sys/os/glnxa64:\\$LD_LIBRARY_PATH" >> .bashrc
-  echo "export LD_LIBRARY_PATH=$HOME/mcr/v85/runtime/glnxa64:$HOME/mcr/v85/bin/glnxa64:$HOME/mcr/v85/sys/os/glnxa64:\\$LD_LIBRARY_PATH" >> .env
   echo "export PATH=$HOME/mcr/v85/bin/:\\$PATH" >> .bashrc
   echo "export PATH=$HOME/mcr/v85/bin/:\\$PATH" >> .env
   rm -rf matlab_installer mcr_options.txt
@@ -223,9 +221,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # uncomment following line to allow syncing to local machine
     #config.vm.synced_folder ".", "/vagrant"
     config.vm.provision "shell", :privileged => false, inline: $script
-
-    config.push.define "atlas" do |push|
-      push.app = "poldracklab/fmri-analysis"
-    end
 
 end

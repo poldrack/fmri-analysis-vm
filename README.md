@@ -1,21 +1,32 @@
 # fmri-analysis-vm
 A VM setup for use in fMRI analysis and education.
 
-## Setting up the virtual machine
+## How to build the machine
 
-1. Install [VirtualBox] (https://www.virtualbox.org/wiki/Downloads)
+1. Install [VirtualBox >= 5.0] (https://www.virtualbox.org/wiki/Downloads)
 
 2. Install [Vagrant] (http://www.vagrantup.com/downloads) - Vagrant is a provisioning system that sets up the virtual machine.
 
 3. Make sure your machine has at least 8Gb of RAM and 10Gb or free space.
 
-4. Open a terminal, cd to the directory where you want to house the project, and then run the VM:
-`vagrant init poldracklab/fmri-analysis; vagrant up --provider virtualbox`
+4. Open a terminal, cd to the directory where you want to house the project:
+`git pull https://github.com/poldrack/fmri-analysis-vm.git`
 
-5. Once the VM is downloaded (total of 2.1 Gb), you can log into the machine from the same directory using:
-`vagrant ssh`
-Once you have done this, you can start the windowing system by typing:
-`startxfce4`
+5. `cd fmri-analysis-vm`
+
+6. Install guest additions updater:
+`vagrant plugin install vagrant-vbguest`
+
+7. Build the VM (this may take some time depending on your Internet connection):
+`vagrant up 2>&1 | tee -a provision.log`
+
+5. Inspect `provision.log` looking for errors. Some download locations periodically go down.
+
+6. If everything is ok reboot the machine and see if you can use it.
+
+7. If you can use it shut it down and export it to a OVF 2.0 format ("File->Export Appliance" from the VirtualBox app menu.)
+
+8. Redistribute the .ova file via Dropbox or Google Drive.
 
 ## Digging deeper
 
@@ -40,16 +51,6 @@ If the VM crashes for some reason (which can occur if there is a network hiccup 
 `vagrant destroy`
 
 And then restart it as outlined above.  
-
-## Building the Vagrant box
-
-1. `git clone https://github.com/poldrack/fmri-analysis-vm.git`
-
-2. `cd fmri-analysis-vm`
-
-3. `vagrant up`
-
-4. To push the image to Atlas see https://atlas.hashicorp.com/help/vagrant/boxes/create
 
 ## Contributing to the IPython Notebooks
 To avoid conflicts when commiting IPython Notebook changes you need to run the following commands (from the roon the the repo):

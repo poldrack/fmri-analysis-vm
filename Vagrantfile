@@ -152,14 +152,6 @@ then
   rm -rf $HOME/data/ds031_example.tgz
 fi
 
-if [ ! -d $HOME/data/ds009 ]
-then
-  echo "getting ds009 copes"
-  mkdir $HOME/data/ds009
-  wget --quiet https://s3.amazonaws.com/openfmri/ds009/ds009_task002_copes.tgz -O $HOME/data/ds009_copes.tgz -nv
-  tar zxvf $HOME/data/ds009_copes.tgz -C $HOME/data/ds009
-  rm -rf $HOME/data/ds009_copes.tgz
-fi
 
 if [ ! -d $HOME/tetrad ]
 then
@@ -174,7 +166,23 @@ then
 	git clone https://github.com/poldrack/fmri-analysis-vm
 fi
 
-$HOME/miniconda/bin/python -c "from nilearn import datasets; datasets.fetch_haxby()"
+$HOME/miniconda/bin/python -c "from nilearn import datasets; datasets.fetch_haxby(n_subjects=1)"
+
+if [ ! -d $HOME/data/ds031 ]
+then
+  echo "getting ds031 data"
+  wget --quiet https://s3.amazonaws.com/openfmri/ds031/ds031_example_data.tgz -O $HOME/data/ds031_example.tgz -nv
+  tar zxvf $HOME/data/ds031_example.tgz -C $HOME/data/
+  rm -rf $HOME/data/ds031_example.tgz
+fi
+
+if [ ! -d $HOME/nilearn_data/haxby2001/subj1/blockmodel/stats ]
+  then
+  echo "getting Haxby statmaps"
+  wget --quiet https://www.dropbox.com/s/8tp4ev3xliy1lsx/blockmodel.tgz?dl=0 -O $HOME/data/haxby_stats.tgz -nv
+  tar zxvf $HOME/data/haxby_stats.tgz -C $HOME/nilearn_data/haxby2001/subj1/
+  rm -rf $HOME/data/haxby_stats.tgz
+  fi
 
 
 sudo apt-get clean -y

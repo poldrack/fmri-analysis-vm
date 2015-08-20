@@ -11,24 +11,29 @@ import matplotlib.pyplot as plt
 import scipy.interpolate
 from scipy.integrate import odeint
 import math
-from nipy.modalities.fmri.hemodynamic_models import spm_hrf,compute_regressor
+from nipy.modalities.fmri.hemodynamic_models import spm_hrf,compute_regressor,gamma_difference_hrf
+
 
 
 def dcm_model(t,z,A,B,C,u,timepoints):
     ut=numpy.abs(timepoints - t).argmin()
     return (A.dot(z)+ u[ut]*B.dot(z) + C.dot(u[ut]).T)[0]
 
-def mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=.01):
+def mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=.01,hrflags=[]):
+    if len(hrflags)>0:
+        assert len(hrflags)==A.shape[0]
+    else:
+        hrflags=numpy.ones(A.shape[0])*6.
     data=numpy.zeros((len(timepoints),A.shape[0]))
     for i in range(1,len(timepoints)):
         data[i,:]=data[i-1,:] + dcm_model(timepoints[i],data[i-1,:],A,B,C,u,timepoints)  + numpy.random.randn(A.shape[0])*noise_sd
-    hrf=spm_hrf(stepsize,oversampling=1)
     data_conv=numpy.zeros(data.shape)
     for i in range(A.shape[0]):
+        hrf=gamma_difference_hrf(stepsize,oversampling=1,delay=hrflags[i])
         data_conv[:,i]=numpy.convolve(data[:,i],hrf)[:data.shape[0]]
     return data,data_conv
 
-def sim_dcm_dataset(noise_sd=5,verbose=False):
+def sim_dcm_dataset(noise_sd=5,verbose=False,hrflags=[]):
 
     sys.path.insert(0,'../utils')
     from mkdesign import create_design_singlecondition
@@ -74,7 +79,7 @@ def sim_dcm_dataset(noise_sd=5,verbose=False):
     d,design=create_design_singlecondition(blockiness=1.0,deslength=tslength,blocklength=20,offset=20)
 
     u=scipy.interpolate.griddata(numpy.arange(1,d.shape[0]),d,timepoints,fill_value=0)
-    data,data_conv=mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=stepsize)
+    data,data_conv=mk_dcm_dataset(A,B,C,u,timepoints,noise_sd,stepsize=stepsize,hrflags=hrflags)
     params={'A':A,'B':B,'C':C,'u':u,'noise_sd':noise_sd,'stepsize':stepsize}
     return data,data_conv,params
 

@@ -24,7 +24,8 @@ A VM setup for use in fMRI analysis and education.
 
 6. If everything is ok reboot the machine and see if you can use it.
 
-7. If you can use it shut it down and export it to a OVF 2.0 format ("File->Export Appliance" from the VirtualBox app menu.)
+7. If you can use it shut it down and export it
+`VBoxManage export fmri-analysis --ovf20 --output /path/to/fmri_training_vm.ova`
 
 8. Redistribute the .ova file via Dropbox or Google Drive.
 

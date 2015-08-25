@@ -12,6 +12,12 @@ Warning: to be able to run this software you will need at least 8Gb of RAM and 2
 6. Update the analysis code.  first, cd into "fmri-analysis-vm", then type "git pull origin master"
 6. Run the ipython notebook server using the command "ipython notebook"
 
+## Errata
+
+There are a few things that you need to do to address some missing files in the VM image.
+
+1.  Install seaborn using "pip install seaborn" from the terminal window (which you can access using the menu at the bottom left: Accessories->LXTerminal).
+
 
 ## How to build the machine
 

@@ -21,6 +21,8 @@ There are a few things that you need to do to address some missing files in the 
 
 ## How to build the machine
 
+If you have trouble downloading the machine image above, you may want to try building the machine from scratch instead.
+
 1. Install [VirtualBox >= 5.0] (https://www.virtualbox.org/wiki/Downloads)
 
 2. Install [Vagrant] (http://www.vagrantup.com/downloads) - Vagrant is a provisioning system that sets up the virtual machine.
@@ -49,11 +51,13 @@ There are a few things that you need to do to address some missing files in the 
 
 10. If everything is ok reboot the machine and see if you can use it.
 
-11. If you can use it shut it down and export it
+## How to export the machine
+
+1. Shut down the machine and export it
 
   `VBoxManage export fmri-analysis --ovf20 --output /path/to/fmri_training_vm.ova`
 
-12. Redistribute the .ova file via Dropbox or Google Drive.
+2. Redistribute the .ova file via Dropbox or Google Drive.
 
 ## Digging deeper
 

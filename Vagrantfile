@@ -60,6 +60,7 @@ statsmodels \
 boto \
 pandas \
 scikit-learn \
+seaborn \
 spyder \
 sympy
 $HOME/miniconda/bin/pip install nibabel nilearn

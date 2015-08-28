@@ -5,7 +5,7 @@ A VM setup for use in fMRI analysis and education.
 Warning: to be able to run this software you will need at least 8Gb of RAM and 20Gb of free hard drive space.
 
 1. Install [VirtualBox >= 5.0] (https://www.virtualbox.org/wiki/Downloads)
-2. Download the snapshot of the VM from https://dl.dropboxusercontent.com/u/2441264/fmri-analysis.ova
+2. Download the snapshot of the VM from https://s3-us-west-2.amazonaws.com/myconnectome/fmri-analysis.ova
 3. Install the VM using "File->Import Appliance" within VirtualBox.
 4. Once it is installed, start the VM using the "start" button within VirtualBox.
 5. This should bring up a virtual machine window.  Start a terminal using the menu at the bottom left "Accessories->LXTerm".

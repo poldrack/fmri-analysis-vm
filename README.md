@@ -16,7 +16,8 @@ Warning: to be able to run this software you will need at least 8Gb of RAM and 2
 
 There are a few things that you need to do to address some missing files in the VM image.
 
-1.  Install seaborn using "pip install seaborn" from the terminal window (which you can access using the menu at the bottom left: Accessories->LXTerminal).
+1. Open the terminal from the menu at the bottom left: Accessories->LXTerminal.
+2. Type $HOME/fmri-analysis-vm/run_me.sh
 
 
 ## How to build the machine

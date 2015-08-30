@@ -12,6 +12,8 @@ for l in lines:
 	if l.find('RepetitionTime')>-1:
 		if l.find('1.16')>-1:
 			newlines.append(l.replace('1.16','2.32'))
+		else:
+			newlines.append(l)
 		print newlines[-1]
 	else:
 		newlines.append(l)

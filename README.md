@@ -1,6 +1,9 @@
 # fmri-analysis-vm
 A VM setup for use in fMRI analysis and education.
 
+# Communication
+To ask questions during the class use gitter: https://gitter.im/poldrack/fmri-analysis-vm (you will need GitHub account).
+
 ## How to install the machine
 Warning: to be able to run this software you will need at least 8Gb of RAM and 20Gb of free hard drive space.
 

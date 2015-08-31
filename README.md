@@ -1,4 +1,6 @@
 # fmri-analysis-vm
+
+[![Join the chat at https://gitter.im/poldrack/fmri-analysis-vm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/poldrack/fmri-analysis-vm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A VM setup for use in fMRI analysis and education.
 
 ## How to install the machine

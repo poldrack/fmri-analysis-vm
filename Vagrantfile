@@ -4,17 +4,16 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-if [ ! -d $HOME/miniconda ]
+if [ ! -d $HOME/miniconda3 ]
 then
  # install anaconda
- wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+# wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
  chmod +x miniconda.sh
  ./miniconda.sh -b
- rm -rf miniconda.sh
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
+ echo "export PATH=$HOME/miniconda3/bin:\\$PATH" >> .bashrc
+ echo "export PATH=$HOME/miniconda3/bin:\\$PATH" >> .env
 fi
-
 wget -O- http://neuro.debian.net/lists/trusty.us-nh.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
 sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 
@@ -45,17 +44,20 @@ default-jre \
 eog \
 geany
 
+sudo apt-get install -y --force-yes  python3-dev libxml2-dev libxslt1-dev zlib1g-dev
 # install nipype dependencies
-$HOME/miniconda/bin/conda update --yes conda
-$HOME/miniconda/bin/conda install --yes pip \
+$HOME/miniconda3/bin/conda update --yes conda
+$HOME/miniconda3/bin/conda install --yes pip \
 numpy \
 scipy \
 nose \
 traits \
 networkx \
 dateutil \
-ipython-notebook \
-matplotlib \
+ipython \
+jupyter 
+
+$HOME/miniconda3/bin/conda install --yes matplotlib \
 statsmodels \
 boto \
 pandas \
@@ -63,10 +65,10 @@ scikit-learn \
 seaborn \
 spyder \
 sympy
-$HOME/miniconda/bin/pip install nibabel nilearn
-$HOME/miniconda/bin/pip install nipy
-$HOME/miniconda/bin/pip install --upgrade https://github.com/nipy/nipype/archive/master.zip
-$HOME/miniconda/bin/pip install --process-dependency-links git+https://github.com/pymc-devs/pymc3
+$HOME/miniconda3/bin/pip install nibabel nilearn
+$HOME/miniconda3/bin/pip install nipy
+$HOME/miniconda3/bin/pip install --upgrade https://github.com/nipy/nipype/archive/master.zip
+$HOME/miniconda3/bin/pip install --process-dependency-links git+https://github.com/pymc-devs/pymc3
 
 if [ ! -d $HOME/mcr ]
 then
@@ -166,7 +168,7 @@ then
 	git clone https://github.com/poldrack/fmri-analysis-vm
 fi
 
-$HOME/miniconda/bin/python -c "from nilearn import datasets; datasets.fetch_haxby(n_subjects=1)"
+$HOME/miniconda3/bin/python -c "from nilearn import datasets; datasets.fetch_haxby(n_subjects=1)"
 
 if [ ! -d $HOME/data/ds031 ]
 then

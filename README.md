@@ -29,7 +29,7 @@ If you have trouble downloading the machine image above, you may want to try bui
 
 1. Install [VirtualBox >= 5.0] (https://www.virtualbox.org/wiki/Downloads)
 
-2. Install [Vagrant] (http://www.vagrantup.com/downloads) - Vagrant is a provisioning system that sets up the virtual machine.
+2. Install [Vagrant] (https://www.vagrantup.com/downloads.html) - Vagrant is a provisioning system that sets up the virtual machine.
 
 3. Make sure your machine has at least 8Gb of RAM and 10Gb or free space.
 

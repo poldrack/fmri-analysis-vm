@@ -8,12 +8,12 @@ To ask questions during the class use gitter: https://gitter.im/poldrack/fmri-an
 Warning: to be able to run this software you will need at least 8Gb of RAM and 20Gb of free hard drive space.
 
 1. Install [VirtualBox >= 5.0] (https://www.virtualbox.org/wiki/Downloads)
-2. Download the snapshot of the VM from https://s3-us-west-2.amazonaws.com/myconnectome/fmri-analysis.ova
+2. Download the snapshot of the VM from http://web.stanford.edu/group/poldracklab/fmri-analysis-vm/fmri-analysis.ova
 3. Install the VM using "File->Import Appliance" within VirtualBox.
 4. Once it is installed, start the VM using the "start" button within VirtualBox.
 5. This should bring up a virtual machine window.  Start a terminal using the menu at the bottom left "Accessories->LXTerm".
 6. Update the analysis code.  first, cd into "fmri-analysis-vm", then type "git pull origin master"
-6. Run the ipython notebook server using the command "ipython notebook"
+6. Run the ipython notebook server using the command "jupyter notebook"
 
 ## Errata
 
@@ -29,7 +29,7 @@ If you have trouble downloading the machine image above, you may want to try bui
 
 1. Install [VirtualBox >= 5.0] (https://www.virtualbox.org/wiki/Downloads)
 
-2. Install [Vagrant] (http://www.vagrantup.com/downloads) - Vagrant is a provisioning system that sets up the virtual machine.
+2. Install [Vagrant] (https://www.vagrantup.com/downloads.html) - Vagrant is a provisioning system that sets up the virtual machine.
 
 3. Make sure your machine has at least 8Gb of RAM and 10Gb or free space.
 

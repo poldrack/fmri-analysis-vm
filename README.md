@@ -88,7 +88,7 @@ If the VM crashes for some reason (which can occur if there is a network hiccup 
 And then restart it as outlined above.  
 
 ## Contributing to the IPython Notebooks
-To avoid conflicts when commiting IPython Notebook changes you need to run the following commands (from the roon the the repo):
+To avoid conflicts when commiting IPython Notebook changes you need to run the following commands (from the root the the repo):
 
 1. `chmod +x scripts/ipynb_drop_output`
 2. `export PATH=$PWD/scripts/:$PATH`

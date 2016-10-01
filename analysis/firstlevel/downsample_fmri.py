@@ -15,7 +15,7 @@ newdata=numpy.zeros(data.shape)
 # NB: this is a poor way to resample!
 ctr=0
 for i in range(0,data.shape[3],2):
-    print i
+    print(i)
     newdata[:,:,:,ctr]=numpy.mean(data[:,:,:,i:i+2],3)
     ctr+=1
 newdata=newdata[:,:,:,:ctr]

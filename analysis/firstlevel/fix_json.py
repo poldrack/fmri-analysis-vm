@@ -14,7 +14,7 @@ for l in lines:
 			newlines.append(l.replace('1.16','2.32'))
 		else:
 			newlines.append(l)
-		print newlines[-1]
+		print(newlines[-1])
 	else:
 		newlines.append(l)
 shutil.move(infile,infile.replace('.json','_orig.json'))

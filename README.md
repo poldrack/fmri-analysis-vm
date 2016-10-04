@@ -13,7 +13,7 @@ Warning: to be able to run this software you will need at least 8Gb of RAM and 2
 4. Once it is installed, start the VM using the "start" button within VirtualBox.
 5. This should bring up a virtual machine window.  Start a terminal using the menu at the bottom left "Accessories->LXTerm".
 6. Update the analysis code.  first, cd into "fmri-analysis-vm", then type "git pull origin master"
-6. Run the ipython notebook server using the command "jupyter notebook"
+7. Run the jupyter notebook server using the command "jupyter notebook"
 
 ## Errata
 

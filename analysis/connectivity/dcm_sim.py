@@ -60,12 +60,12 @@ def sim_dcm_dataset(noise_sd=5,verbose=False,hrflags=[]):
     u=0
 
     if verbose:
-    	print 'A'
-    	print A
-    	print 'B'
-    	print B
-    	print 'C'
-    	print C
+    	print('A')
+    	print(A)
+    	print('B')
+    	print(B)
+    	print('C')
+    	print(C)
 
     # we are assuming a 1 second TR for the resulting data
     # but the neural data are at a 1/16 millisecond time resolution

@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import scipy.interpolate
 from scipy.integrate import odeint
 import math
-from nipy.modalities.fmri.hemodynamic_models import spm_hrf,compute_regressor,gamma_difference_hrf
+from nipy.modalities.fmri.hemodynamic_models import spm_hrf,compute_regressor
+from nipy.modalities.fmri.hemodynamic_models import _gamma_difference_hrf as gamma_difference_hrf
 
 
 

@@ -1,27 +1,27 @@
 
 # coding: utf-8
 
-# In this exercise we will decode orientation using data collected for the Cognitive Neuroscience module in 2017.  The subject performed a task that manipulated whether attention was placed towards the left or right visual field, or with no attentional focus (control condition). 
-# 
+# In this exercise we will decode orientation using data collected for the Cognitive Neuroscience module in 2017.  The subject performed a task that manipulated whether attention was placed towards the left or right visual field, or with no attentional focus (control condition).
+#
 # Notes from Dan:
-# 
+#
 # *v1_tseries are the time series files, as voxel * volume matrices
 # *v1_r2 are the variance explained per voxel by the FIR model with three conditions for task=0/1/2
-# design is a long form matrix (rows are individual events, first column are volumes and second column trial type) indicating the volume at which the different trial types occurred, 0 = neutral task (press button when stimulus cross changes color), 1 = attend left side and detect the direction of rotation, 2 = attend right side and detect the direction of rotation 
-# 
+# design is a long form matrix (rows are individual events, first column are volumes and second column trial type) indicating the volume at which the different trial types occurred, 0 = neutral task (press button when stimulus cross changes color), 1 = attend left side and detect the direction of rotation, 2 = attend right side and detect the direction of rotation
+#
 # Stimulus was two gabor patches left and right of fixation flickering at 5 Hz.
-# 
+#
 # fixate: 500 ms
 # task cue: 500 ms
 # ISI: 1000 ms
 # stimulus: 4000 ms
 # change+resp: 1500 ms
 # var ITI: uniform distribution between 2500 and 9500 ms
-# 
+#
 # From staring at the deconvolutions it seems like the optimal time window to be looking at to separate trial types starts basically with the stimulus at 2 s, you start seeing task/neutral separation immediately and then by ~3-4 s you start seeing separation by left/right in most voxels.
-# 
+#
 # ##### Load data
-# 
+#
 # First we load the data files.
 
 # In[308]:
@@ -36,9 +36,7 @@ import sklearn.model_selection
 import sklearn.preprocessing
 import scipy.stats,scipy.io
 import random
-import seaborn 
-get_ipython().magic('matplotlib inline')
-import matplotlib.pyplot as plt
+import seaborn
 
 
 datadir='data'
@@ -72,7 +70,7 @@ def make_fir_model(onsets,tslength,hrflength=48,tr=1):
     generate an FIR model design matrix
     this only works for a single condition
     """
-        
+
     X=numpy.zeros((tslength,int(hrflength/tr)))
     for i in range(hrflength):
         for o in onsets:
@@ -105,19 +103,6 @@ print(fir.shape)
 
 beta_hat_left=numpy.linalg.inv(fir.T.dot(fir)).dot(fir.T).dot(lv1_ts)
 beta_hat_right=numpy.linalg.inv(fir.T.dot(fir)).dot(fir.T).dot(rv1_ts)
-plt.figure(figsize=(12,6))
-plt.subplot(1,2,1)
-plt.plot(beta_hat_left[:48].mean(1))
-plt.plot(beta_hat_left[48:96].mean(1))
-plt.plot(beta_hat_left[96:144].mean(1))
-plt.legend(['attend left','attend right','neutral'])
-plt.title('Left V1')
-plt.subplot(1,2,2)
-plt.plot(beta_hat_right[:48].mean(1))
-plt.plot(beta_hat_right[48:96].mean(1))
-plt.plot(beta_hat_right[96:144].mean(1))
-plt.legend(['attend left','attend right','neutral'])
-plt.title('Right V1')
 
 pred_left=fir.dot(beta_hat_left)
 
@@ -125,9 +110,6 @@ pred_left=fir.dot(beta_hat_left)
 # In[162]:
 
 # check fit of the model over first 500 timepoints
-plt.figure(figsize=(14,4))
-plt.plot(sklearn.preprocessing.scale(lv1_ts.mean(1)[:500]))
-plt.plot(sklearn.preprocessing.scale(rv1_ts.mean(1)[:500]))
 meanpred=sklearn.preprocessing.scale(pred_left.mean(1))
 
 plt.plot(meanpred[:500])
@@ -135,7 +117,7 @@ pred_left.mean(1).shape
 
 
 # #### Classification analysis
-# 
+#
 # Now let's fit a classifier using balanced 8-fold crossvalidation. For now we only include attention trials.  We will fit the classifier at each time point along the trial timecourse.  We use a nested crossvalidation loop to determine the classifier parameters for each dataset.
 
 # In[338]:
@@ -167,13 +149,13 @@ def get_accuracy_timeseries(tsdata,labels_attend,onsets,shuffle=False,clf=clf,wi
     iterate over timepoints
     """
     acc=numpy.zeros(window)
-    for tp in range(window):  
+    for tp in range(window):
         # pull out data for each trial/timepoint
         if voxels is None:
             data=numpy.zeros((len(labels_attend),tsdata['leftV1'].shape[1] + tsdata['rightV1'].shape[1]))
         else:
             data=numpy.zeros((len(labels_attend),tsdata[voxels+'V1'].shape[1]))
-            
+
         ctr=0
         for cond in ['attendleft','attendright']:
             for ons in onsets[cond]:
@@ -181,7 +163,7 @@ def get_accuracy_timeseries(tsdata,labels_attend,onsets,shuffle=False,clf=clf,wi
                     data[ctr,:]=numpy.hstack((tsdata['leftV1'][ons+tp,:],tsdata['rightV1'][ons+tp,:]))
                 else:
                     data[ctr,:]=tsdata[voxels+'V1'][ons+tp,:]
-                    
+
                 ctr+=1
         acc[tp]=run_classifier(data,labels_attend,clf=clf,shuffle=shuffle)
     return acc
@@ -202,30 +184,6 @@ acc_right=get_accuracy_timeseries(tsdata,labels_attend,onsets,voxels='right',clf
 
 # In[339]:
 
-plt.figure(figsize=(14,5))
-plt.subplot(1,3,1)
-plt.plot(numpy.arange(0,20,0.5),acc_all)
-plt.axis([0,20,0,1])
-plt.plot([0,20],[0.5,0.5],'k--')
-plt.title('All voxels')
-plt.xlabel('Timepoints (0.5 secs each)')
-plt.ylabel('Pecent classification accuracy')
-
-plt.subplot(1,3,2)
-plt.plot(numpy.arange(0,20,0.5),acc_left)
-plt.axis([0,20,0,1])
-plt.plot([0,20],[0.5,0.5],'k--')
-plt.title('Left V1')
-plt.xlabel('Timepoints (0.5 secs each)')
-plt.ylabel('Pecent classification accuracy')
-
-plt.subplot(1,3,3)
-plt.plot(numpy.arange(0,20,0.5),acc_right)
-plt.axis([0,20,0,1])
-plt.plot([0,20],[0.5,0.5],'k--')
-plt.title('Right V1')
-plt.xlabel('Timepoints (0.5 secs each)')
-plt.ylabel('Pecent classification accuracy')
 
 
 # Now let's run it with the labels shuffled 100 times to see how good these results are compared to chance.  This will take a few minutes to complete. For a real analysis one would want to do this many more times (up to ~5000) in order for the distribution of extreme values to stabilize.
@@ -252,56 +210,3 @@ else:
 # In[ ]:
 
 rand_percentile=99 # percent cutoff for randomization
-
-plt.figure(figsize=(14,5))
-plt.subplot(1,3,1)
-plt.plot(numpy.arange(0,20,0.5),acc_all)
-plt.axis([0,20,0,1])
-plt.plot([0,20],[0.5,0.5],'k--')
-plt.title('All voxels')
-plt.xlabel('Timepoints (0.5 secs each)')
-plt.ylabel('Pecent classification accuracy')
-for i in range(100):
-    plt.plot(numpy.arange(0,20,0.5),acc_all_rand[i,:],'r',linewidth=0.1)
-cutoff=numpy.zeros(40)
-for i in range(40):
-    cutoff[i]=scipy.stats.scoreatpercentile(acc_all_rand[:,i],rand_percentile)
-    if acc_all[i]>cutoff[i]:
-        plt.text(i/2,0.9,'*')
-
-plt.subplot(1,3,2)
-plt.plot(numpy.arange(0,20,0.5),acc_left)
-plt.axis([0,20,0,1])
-plt.plot([0,20],[0.5,0.5],'k--')
-plt.title('Left V1')
-plt.xlabel('Timepoints (0.5 secs each)')
-plt.ylabel('Pecent classification accuracy')
-for i in range(100):
-    plt.plot(numpy.arange(0,20,0.5),acc_left_rand[i,:],'r',linewidth=0.1)
-cutoff=numpy.zeros(40)
-for i in range(40):
-    cutoff[i]=scipy.stats.scoreatpercentile(acc_left_rand[:,i],rand_percentile)
-    if acc_left[i]>cutoff[i]:
-        plt.text(i/2,0.9,'*')
-
-
-plt.subplot(1,3,3)
-plt.plot(numpy.arange(0,20,0.5),acc_right)
-plt.axis([0,20,0,1])
-plt.plot([0,20],[0.5,0.5],'k--')
-plt.title('Right V1')
-plt.xlabel('Timepoints (0.5 secs each)')
-plt.ylabel('Pecent classification accuracy')
-for i in range(100):
-    plt.plot(numpy.arange(0,20,0.5),acc_right_rand[i,:],'r',linewidth=0.1)
-cutoff=numpy.zeros(40)
-for i in range(40):
-    cutoff[i]=scipy.stats.scoreatpercentile(acc_right_rand[:,i],rand_percentile)
-    if acc_right[i]>cutoff[i]:
-        plt.text(i/2,0.9,'*')
-
-
-# In[ ]:
-
-
-

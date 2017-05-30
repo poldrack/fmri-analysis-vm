@@ -26,17 +26,16 @@
 
 # In[308]:
 
-import os,json,glob,pickle
+import random,os,json,glob,pickle
 import numpy,pandas
 import nibabel
 import sklearn.multiclass
-from sklearn.svm import SVC
+from sklearn.svm import SVC,LinearSVC
 import sklearn.metrics
 import sklearn.model_selection
 import sklearn.preprocessing
 import scipy.stats,scipy.io
 import random
-import seaborn
 
 
 datadir='data'
@@ -50,7 +49,7 @@ rv1_ts=sklearn.preprocessing.scale(rv1_ts.T)
 tsdata={'leftV1':lv1_ts,'rightV1':rv1_ts}
 
 desmtx=scipy.io.loadmat(os.path.join(datadir,'design.mat'))['design']
-
+labels=desmtx[:,0]
 ntrials=desmtx.shape[0]
 ntp,nvox=lv1_ts.shape
 print(ntrials,'trials')
@@ -92,8 +91,6 @@ neutral_fir=make_fir_model(onsets['neutral'],ntp)
 fir=numpy.hstack((left_fir,right_fir,neutral_fir))
 
 # show the design matrix
-plt.imshow(fir[:400,:])
-plt.axis('auto')
 print(fir.shape)
 
 
@@ -112,7 +109,6 @@ pred_left=fir.dot(beta_hat_left)
 # check fit of the model over first 500 timepoints
 meanpred=sklearn.preprocessing.scale(pred_left.mean(1))
 
-plt.plot(meanpred[:500])
 pred_left.mean(1).shape
 
 
@@ -123,7 +119,7 @@ pred_left.mean(1).shape
 # In[338]:
 
 def run_classifier(data,labels, shuffle=False,nfolds=8,scale=True,
-                  clf=None):
+                  clf=None,verbose=False):
     """
     run classifier for a single dataset
     """
@@ -134,16 +130,18 @@ def run_classifier(data,labels, shuffle=False,nfolds=8,scale=True,
         numpy.random.shuffle(labels)
     if not clf:
         clf=sklearn.svm.SVC(C=C)
-    skf = sklearn.model_selection.StratifiedKFold(8)
+    skf = sklearn.model_selection.StratifiedKFold(5,shuffle=True)
     pred=numpy.zeros(labels.shape[0])
     for train, test in skf.split(features,labels):
         clf.fit(features[train,:],labels[train])
         pred[test]=clf.predict(features[test,:])
+    if verbose:
+        print(clf.best_params_)
     acc=sklearn.metrics.accuracy_score(labels, pred)
     return acc
 
 
-def get_accuracy_timeseries(tsdata,labels_attend,onsets,shuffle=False,clf=clf,window=40,
+def get_accuracy_timeseries(tsdata,labels_attend,onsets,shuffle=False,clf=None,window=40,
                            voxels=None):
     """
     iterate over timepoints
@@ -172,11 +170,14 @@ labels_attend=numpy.array([i for i in labels if i > 0])
 
 #clf=sklearn.linear_model.LogisticRegressionCV(penalty='l1',solver='liblinear')
 #clf=sklearn.svm.SVC(C=1)
-tuned_parameters = [{'C': [0.5,1,5,10,20]}]
-clf = sklearn.model_selection.GridSearchCV(sklearn.svm.SVC(C=1,kernel='linear'), tuned_parameters, cv=5)
+tuned_parameters = [{'C': [0.0005,0.001,0.005,0.01,0.05, 0.1]}]
+clf = sklearn.model_selection.GridSearchCV(sklearn.svm.LinearSVC(C=1), tuned_parameters, cv=5,n_jobs=6)
 
+print('running for all')
 acc_all=get_accuracy_timeseries(tsdata,labels_attend,onsets,clf=clf)
+print('running for left')
 acc_left=get_accuracy_timeseries(tsdata,labels_attend,onsets,voxels='left',clf=clf)
+print('running for right')
 acc_right=get_accuracy_timeseries(tsdata,labels_attend,onsets,voxels='right',clf=clf)
 
 
@@ -191,18 +192,19 @@ acc_right=get_accuracy_timeseries(tsdata,labels_attend,onsets,voxels='right',clf
 # In[ ]:
 
 # if the saved results already exist then just reload them, to save time
-if os.path.exists('shuffled_accuracy.pkl'):
-    acc_all_rand,acc_left_rand,acc_right_rand,clf=pickle.load(open('shuffled_accuracy.pkl','rb'))
-else:
-    acc_all_rand=numpy.zeros((100,40))
-    acc_left_rand=numpy.zeros((100,40))
-    acc_right_rand=numpy.zeros((100,40))
+if 1:
+    nruns=20
+    hash='%08x'%random.getrandbits(32)
+    acc_all_rand=numpy.zeros((nruns,40))
+    acc_left_rand=numpy.zeros((nruns,40))
+    acc_right_rand=numpy.zeros((nruns,40))
 
-    for i in range(100):
+    for i in range(nruns):
+        print(i)
         acc_all_rand[i,:]=get_accuracy_timeseries(tsdata,labels_attend,onsets,shuffle=True,clf=clf)
         acc_left_rand[i,:]=get_accuracy_timeseries(tsdata,labels_attend,onsets,voxels='left',shuffle=True,clf=clf)
         acc_right_rand[i,:]=get_accuracy_timeseries(tsdata,labels_attend,onsets,voxels='right',shuffle=True,clf=clf)
-    pickle.dump((acc_all_rand,acc_left_rand,acc_right_rand,clf),open('shuffled_accuracy.pkl','wb'))
+    pickle.dump((acc_all_rand,acc_left_rand,acc_right_rand,clf),open('shuffled_accuracy_%s.pkl'%hash,'wb'))
 
 
 # Now we plot those results alongside the true classification results, adding an asterisk at the timepoints where the observed accuracy is greater than the 99th percentile of the random accuracies.

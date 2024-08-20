@@ -55,7 +55,7 @@ traits \
 networkx \
 dateutil \
 ipython \
-jupyter 
+jupyter
 
 $HOME/miniconda3/bin/conda install --yes matplotlib \
 statsmodels \
@@ -89,7 +89,7 @@ fi
 if [ ! -d $HOME/spm12 ]
 then
   echo "downloading SPM..."
-  wget --quiet http://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/dev/spm12_r6472_Linux_R2015a.zip -O spm12.zip
+  wget --quiet http://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/dev/spm12_latest_BI_Linux_R2017b.zip -O spm12.zip
   unzip spm12.zip
   echo 'alias spm="$HOME/spm12/run_spm12.sh $HOME/mcr/v85/"' >> .bashrc
   echo 'alias spm="$HOME/spm12/run_spm12.sh $HOME/mcr/v85/"' >> .env
@@ -181,7 +181,7 @@ fi
 if [ ! -d $HOME/nilearn_data/haxby2001/subj1/blockmodel/stats ]
   then
   echo "getting Haxby statmaps"
-  wget --quiet https://www.dropbox.com/s/8tp4ev3xliy1lsx/blockmodel.tgz?dl=0 -O $HOME/data/haxby_stats.tgz -nv
+  wget --quiet https://www.dropbox.com/s/j6r3ogtaqfl37i0/blockmodel.tgz?dl=0 -O $HOME/data/haxby_stats.tgz -nv
   tar zxvf $HOME/data/haxby_stats.tgz -C $HOME/nilearn_data/haxby2001/subj1/
   rm -rf $HOME/data/haxby_stats.tgz
   fi
